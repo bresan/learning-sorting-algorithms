@@ -1,0 +1,3 @@
+/Users/rodrigobresan/CLionProjects/learning-sorting/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/rodrigobresan/CLionProjects/learning-sorting/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/rodrigobresan/CLionProjects/learning-sorting/cmake-build-debug/CMakeFiles/learning_sorting.dir
