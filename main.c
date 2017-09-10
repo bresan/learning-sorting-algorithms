@@ -11,6 +11,10 @@ void mergeSort(int a[], int size);
 
 void merge(int *array, int *leftArray, int leftCount, int *rightArray, int rightCount);
 
+void quickSort(int a[], int start, int end);
+
+int partition(int a[], int start, int end);
+
 void processSelectedOption(int option);
 
 void printArray(int a[], int size);
@@ -24,6 +28,7 @@ static const int OPTION_SELECTION_SORT = 1;
 static const int OPTION_BUBBLE_SORT = 2;
 static const int OPTION_INSERTION_SORT = 3;
 static const int OPTION_MERGE_SORT = 4;
+static const int OPTION_QUICK_SORT = 5;
 static const int OPTION_EXIT = 0;
 
 int main() {
@@ -37,6 +42,7 @@ int main() {
         printf("2. Use bubble sort\n");
         printf("3. Use insertion sort\n");
         printf("4. Use merge sort\n");
+        printf("5. Use quick sort\n");
         printf("0. Exit\n\n");
 
         scanf("\n%d", &selectedOption);
@@ -50,10 +56,12 @@ int main() {
 
 void processSelectedOption(int option) {
 
-    printf("\nArray before sorting: \n");
     int size = sizeof(sampleArray) / sizeof(sampleArray[0]);
+    if (option != 0) {
+        printf("\nArray before sorting: \n");
+        printArray(sampleArray, size);
+    }
 
-    printArray(sampleArray, size);
     switch (option) {
         case OPTION_SELECTION_SORT:
             selectionSort(sampleArray, size);
@@ -71,6 +79,10 @@ void processSelectedOption(int option) {
             mergeSort(sampleArray, size);
             break;
 
+        case OPTION_QUICK_SORT:
+            quickSort(sampleArray, 0, size - 1);
+            break;
+
         case OPTION_EXIT:
             exit(0);
 
@@ -78,10 +90,12 @@ void processSelectedOption(int option) {
             printf("\n\n\nNot a valid option");
     }
 
+
     printf("\n\nArray after sorting: \n");
     printArray(sampleArray, size);
     restoreArrayValues();
 }
+
 
 void restoreArrayValues() {
     int size = sizeof(sampleArray) / sizeof(sampleArray[0]);
@@ -199,5 +213,36 @@ void merge(int *array, int *leftArray, int leftCount, int *rightArray, int right
         indexMerged++;
         indexRight++;
     }
+}
 
+void quickSort(int array[], int start, int end) {
+    int pivotIndex;
+
+    if (start < end) {
+        pivotIndex = partition(array, start, end);
+        quickSort(array, start, pivotIndex - 1);
+        quickSort(array, pivotIndex + 1, end);
+    }
+}
+
+int partition(int array[], int start, int end) {
+    int pivot, i, pivotIndex, temp, temp2;
+
+    pivot = array[end];
+    pivotIndex = start;
+
+    for (i = start; i < end; i++) {
+        if (array[i] <= pivot) {
+            temp = array[i];
+            array[i] = array[pivotIndex];
+            array[pivotIndex] = temp;
+
+            pivotIndex++;
+        }
+    }
+
+    temp2 = array[pivotIndex];
+    array[pivotIndex] = array[end];
+    array[end] = temp2;
+    return pivotIndex;
 }
