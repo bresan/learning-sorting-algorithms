@@ -5,20 +5,25 @@ void selectionSort(int a[], int size);
 
 void bubbleSort(int a[], int size);
 
-void processSelectedOption(int option);
-
 void insertionSort(int a[], int size);
+
+void mergeSort(int a[], int size);
+
+void merge(int *array, int *leftArray, int leftCount, int *rightArray, int rightCount);
+
+void processSelectedOption(int option);
 
 void printArray(int a[], int size);
 
 void restoreArrayValues();
 
 const int originalArray[] = {2, 6, 7, 3, 4, 1};
-int a[] = {2, 6, 7, 3, 4, 1};
+int sampleArray[] = {2, 6, 7, 3, 4, 1};
 
 static const int OPTION_SELECTION_SORT = 1;
 static const int OPTION_BUBBLE_SORT = 2;
 static const int OPTION_INSERTION_SORT = 3;
+static const int OPTION_MERGE_SORT = 4;
 static const int OPTION_EXIT = 0;
 
 int main() {
@@ -31,6 +36,7 @@ int main() {
         printf("1. Use selection sort\n");
         printf("2. Use bubble sort\n");
         printf("3. Use insertion sort\n");
+        printf("4. Use merge sort\n");
         printf("0. Exit\n\n");
 
         scanf("\n%d", &selectedOption);
@@ -45,38 +51,42 @@ int main() {
 void processSelectedOption(int option) {
 
     printf("\nArray before sorting: \n");
-    int size = sizeof(a) / sizeof(a[0]);
+    int size = sizeof(sampleArray) / sizeof(sampleArray[0]);
 
-    printArray(a, size);
+    printArray(sampleArray, size);
     switch (option) {
         case OPTION_SELECTION_SORT:
-            selectionSort(a, size);
+            selectionSort(sampleArray, size);
             break;
 
         case OPTION_BUBBLE_SORT:
-            bubbleSort(a, size);
+            bubbleSort(sampleArray, size);
             break;
 
         case OPTION_INSERTION_SORT:
-            insertionSort(a, size);
+            insertionSort(sampleArray, size);
+            break;
+
+        case OPTION_MERGE_SORT:
+            mergeSort(sampleArray, size);
             break;
 
         case OPTION_EXIT:
             exit(0);
 
         default:
-            printf("Not a valid option");
+            printf("\n\n\nNot a valid option");
     }
 
     printf("\n\nArray after sorting: \n");
-    printArray(a, size);
+    printArray(sampleArray, size);
     restoreArrayValues();
 }
 
 void restoreArrayValues() {
-    int size = sizeof(a) / sizeof(a[0]);
+    int size = sizeof(sampleArray) / sizeof(sampleArray[0]);
     for (int i = 0; i < size; i++) {
-        a[i] = originalArray[i];
+        sampleArray[i] = originalArray[i];
     }
 }
 
@@ -127,8 +137,67 @@ void insertionSort(int a[], int size) {
         while (holeIndex > 0 && a[holeIndex - 1] > value) {
             a[holeIndex] = a[holeIndex - 1];
             holeIndex--;
-         }
+        }
 
         a[holeIndex] = value;
     }
+}
+
+void mergeSort(int a[], int size) {
+    int middle;
+    int *leftArray, *rightArray;
+
+    if (size < 2) {
+        return;
+    }
+
+    middle = size / 2;
+
+    leftArray = (int *) malloc(middle * sizeof(int));
+    rightArray = (int *) malloc((size - middle) * sizeof(int));
+
+    for (int i = 0; i < middle; i++) {
+        leftArray[i] = a[i];
+    }
+
+    for (int i = middle; i < size; i++) {
+        rightArray[i - middle] = a[i];
+    }
+
+    mergeSort(leftArray, middle);
+    mergeSort(rightArray, size - middle);
+
+    merge(a, leftArray, middle, rightArray, size - middle);
+    free(leftArray);
+    free(rightArray);
+}
+
+void merge(int *array, int *leftArray, int leftCount, int *rightArray, int rightCount) {
+    int indexLeft, indexRight, indexMerged;
+    indexLeft = indexRight = indexMerged = 0;
+
+    while (indexLeft < leftCount && indexRight < rightCount) {
+        if (leftArray[indexLeft] < rightArray[indexRight]) {
+            array[indexMerged] = leftArray[indexLeft];
+            indexMerged++;
+            indexLeft++;
+        } else {
+            array[indexMerged] = rightArray[indexRight];
+            indexMerged++;
+            indexRight++;
+        }
+    }
+
+    while (indexLeft < leftCount) {
+        array[indexMerged] = leftArray[indexLeft];
+        indexMerged++;
+        indexLeft++;
+    }
+
+    while (indexRight < rightCount) {
+        array[indexMerged] = rightArray[indexRight];
+        indexMerged++;
+        indexRight++;
+    }
+
 }
